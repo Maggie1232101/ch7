@@ -69,11 +69,73 @@ public static double simulate(int[] years, int[] months, double[] prices) {
 	}
 	
 	public static String decide(double[] history, boolean holding, double boughtAt) {
-		return buyAndHold(history, holding, boughtAt);   // change this line to switch strategies
+		return dipBuyer(history, holding, boughtAt);   // change this line to switch strategies
 	}
 	
 	public static String buyAndHold(double[] history, boolean holding, double boughtAt){
 		return "BUY";
+		
+	}
+	public static String dipBuyer(double[] history, boolean holding, double boughtAt){
+		if(history.length>2){
+			if(!holding&& history[history.length-1]<history[history.length-2] && history[history.length-2] < history[history.length-3]){
+				return "BUY";
+			}
+			if(holding && history[history.length-1] > boughtAt*1.1){
+				return "SELL";
+			}
+			else{
+				return "HOLD";
+			}
+		}
+		else{
+			return "HOLD";
+		}
+	}
+	
+	public static String movingAverage(double[] history, boolean holding, double boughtAt){
+		if(history.length>=12){
+			if(!holding && history[history.length-1]<average(history,12)){
+				return "BUY";
+			}
+			if(holding && history[history.length-1]>average(history,12)){
+				return "SELL";
+			}
+			
+			
+		}
+		
+			return "HOLD";
+		
+		
+	}
+	
+	
+	public static double average(double[] history, int n){
+		int res=0;
+		for( int i = 0; i<=n;  i++){
+			res+= history[history.length-1];
+		}
+		return res/n;
+	}
+	
+	public static String myStrategy(double[] history, boolean holding, double boughtAt){
+		if(history.length>3){
+			if(!holding && history[history.length-1]<average(history,3)){
+					return "BUY";
+				
+			}
+			else if(holding && history[history.length-1]>average(history,3)){
+				return "SELL";
+			}
+			else{
+				return "HOLD";
+			}
+			
+		}
+		else{
+			return "HOLD";
+		}
 		
 	}
 
@@ -107,7 +169,7 @@ public static double simulate(int[] years, int[] months, double[] prices) {
 	}
 
     public static void main(String[] args) throws FileNotFoundException {
-        Scanner in = new Scanner(new File("tiny.txt"));
+        Scanner in = new Scanner(new File("msft_2000_2010.txt"));
         String symbol = in.next();
         int n = in.nextInt();
         
